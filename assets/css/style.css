@@ -1,14 +1,15 @@
 /*
- * Assignment 1 - Single-page application milestone 1.
+ * Assignment 1 - Single-page application milestone.
  *
  * Sections:
  *   1. Design tokens
  *   2. Base / reset
  *   3. Header
- *   4. Main / results
+ *   4. Main / views / results
  *   5. Product cards
- *   6. Footer
- *   7. Responsive
+ *   6. Dialog
+ *   7. Footer
+ *   8. Responsive
  */
 
 
@@ -53,6 +54,14 @@
   box-sizing: border-box;
 }
 
+/*
+ * The router hides views with the hidden attribute. This keeps that working even
+ * if one of them later picks up a class that sets display.
+ */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   background-color: var(--paper);
@@ -90,6 +99,12 @@ button {
   cursor: pointer;
 }
 
+/* Several controls are now real buttons, so keyboard focus has to be visible. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 
 /* --- 3 header --- */
 
@@ -113,6 +128,11 @@ header {
   margin-inline-start: auto;
 }
 
+/*
+ * The separators between these links used to be "|" characters typed into the
+ * markup, which screen readers read out. The gap above and the accent underline
+ * below do the same job without putting presentation in the HTML.
+ */
 .nav_link {
   padding: var(--space-2) 0;
   border: 0;
@@ -161,7 +181,7 @@ header {
 }
 
 
-/* --- 4 main --- */
+/* --- 4 main / views / results --- */
 
 main {
   padding-inline: var(--layout-gutter);
@@ -174,11 +194,41 @@ main {
   gap: var(--space-4);
 }
 
-.results_title {
+.results_title,
+.view_title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 1.4rem + 2.2vw, 3rem);
   font-weight: 600;
   letter-spacing: -0.03em;
+}
+
+.view_lede {
+  max-width: 56ch;
+  margin-block: var(--space-4) var(--space-5);
+  color: var(--ink-faint);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.button_primary {
+  display: inline-block;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--ink);
+  background-color: var(--ink);
+  color: var(--paper);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.button_primary:hover {
+  text-decoration: none;
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.results_message {
+  margin-top: var(--space-5);
+  color: var(--ink-faint);
 }
 
 
@@ -209,14 +259,45 @@ main {
   border: 1px solid var(--line);
 }
 
-.card_image {
+/*
+ * The thumbnail is wrapped in a button rather than being a clickable <img>, so
+ * it can be reached and activated from the keyboard and is announced as a
+ * control.
+ */
+.card_button_view_product {
   grid-area: image;
+  display: block;
+  width: 100%;
+  padding: var(--space-4);
+  border: 0;
+  background: none;
+  text-align: initial;
+}
+
+.card_image {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: contain;
-  padding: var(--space-4);
-  background-color: var(--paper);
-  cursor: pointer;
+}
+
+/*
+ * Set by BrowseView.markImageFailed() when a thumbnail URL does not load. The
+ * broken image is removed and this placeholder takes its space, so the card
+ * keeps its shape instead of collapsing around a broken-image icon.
+ */
+.card_no_image .card_image {
+  display: none;
+}
+
+.card_no_image .card_button_view_product::after {
+  content: "Image unavailable";
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: var(--accent-soft);
+  color: var(--ink-faint);
+  font-size: 0.8rem;
 }
 
 .card_title {
@@ -224,7 +305,7 @@ main {
   padding: var(--space-4) 0 0 var(--space-4);
   font-size: 0.95rem;
   font-weight: 500;
-  line-height: 1.35; 
+  line-height: 1.35;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -254,7 +335,7 @@ main {
   font-weight: 500;
 }
 
-.card_button_add {
+.card_button_add_to_cart {
   display: grid;
   place-items: center;
   width: 36px;
@@ -270,7 +351,12 @@ main {
 }
 
 
-/* --- 6 footer --- */
+/* --- 6 dialog --- */
+
+
+
+
+/* --- 7 footer --- */
 
 footer {
   display: grid;
@@ -329,7 +415,7 @@ footer {
 }
 
 
-/* --- 7 responsive --- */
+/* --- 8 responsive --- */
 
 @media (max-width: 760px) {
   header {
@@ -354,12 +440,13 @@ footer {
     gap: var(--space-4);
   }
 
-  .card_title {
+  .card_title,
+  .card_price {
     padding-inline-start: var(--space-3);
   }
 
-  .card_price {
-    padding-inline-start: var(--space-3);
+  .card_button_view_product {
+    padding: var(--space-3);
   }
 
   .card_actions {
