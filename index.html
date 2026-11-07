@@ -18,12 +18,12 @@
         <header> 
 
             <a class="logo" href="#browse" data-route="browse">
-                <span class="logo_word">Assignment 1</span>
+                <span class="logo_word">Logo</span>
             </a>
 
             <nav class="nav" aria-label="Main">
-                <a class="nav_link is_active" href="#browse" data-route="browse">Browse</a>
-                <button class="nav_link" type="button" data-dialog="about">About</button>
+                <a class="nav_link is_active" href="#browse" data-route="browse">Browse</a> | 
+                <a class="nav_link" href="#about" data-dialog="about">About</a>
             </nav>
  
             <p class="cart_indicator" >
@@ -35,29 +35,30 @@
         <main>
             <article class="view" id="browse">
 
-            <section id="results">
+                <section id="results">
 
-                <div class="results_header">
-                <h1 class="results_title">Browse</h1>
-                <p class="results_count" id="results_count"></p>
-                </div>
-
-                <p class="results_message" id="results_message" hidden></p>
-
-                <ul class="product_grid" id="product_grid"></ul>
-
-            </section>
-
-            <div id="product_card_template">
-                <li class="card">
-                    <img class="card_image" src="" alt="" loading="lazy">
-                    <h2 class="card_title"></h2>
-                    <p class="card_price"></p>
-                    <div class="card_actions">
-                        <button type="button" class="card_button card_button_add" data-action="add_to_cart">+</button>
+                    <div class="results_header">
+                    <h1 class="results_title">Browse</h1>
+                    <p class="results_count" id="results_count"></p>
                     </div>
-                </li>
-            </div>
+
+                    <p class="results_message" id="results_message" hidden></p>
+
+                    <ul class="product_grid" id="product_grid"></ul>
+
+                </section>
+
+                <ul id="product_card_template" hidden>
+                    <li class="card">
+                        <img class="card_image" src="" alt="" loading="lazy">
+                        <h2 class="card_title"></h2>
+                        <p class="card_price"></p>
+                        <div class="card_actions">
+                            <button type="button" class="card_button card_button_add" data-action="add_to_cart">+</button>
+                        </div>
+                    </li>
+                </ul>
+
             </article>
         </main>
         <footer>
@@ -68,10 +69,10 @@
             </div>
 
             <nav class="footer_links" aria-label="footer">
-                <h2 class="footer_heading">About Assignment</h2>
-                <a href="https://github.com/SirDre/products/docs">Repository</a>
+                <h2 class="footer_heading">About</h2>
+                <a href="https://github.com/SirDre/products/LICENSE">License</a>
                 <a href="https://sirdre.github.io/products/README.md">Read me</a>
-                <button class="footer_button" type="button" data-dialog="about">About us</button>
+                <a class="footer_button" href="#about" data-dialog="about">About</a>
             </nav> 
 
             <p class="footer_legal">

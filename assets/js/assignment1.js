@@ -11,6 +11,9 @@
 // The catalogue data is available via a static import
 import catalogue from '../data/data-minifed.json' with { type: 'json' };
 
+// verify the products array was created from the json file
+console.log(catalogue);
+
 /** Values that tune the application, gathered in one place. */
 const CONFIG = {
   productLimit: 20,
@@ -38,7 +41,6 @@ let cartCount = 0;
  * Finds a displayed product by its id. Replaces the keyed lookup previously used for this purpose.
  */
 function findProduct(id) {
-
   for (let product of displayedProducts) {
     if (product.id === id) {
       return product;
@@ -63,12 +65,11 @@ function selectProducts(source, limit) {
 /** ---- Rendering ---- */
 
 /**
- * Builds one product card by cloning the template declared in index.html. 
+ * Builds one product card by cloning the sample card declared in index.html.
  */
 function createProductCard(product, template) {
 
-  const clone = template.content.cloneNode(true);
-  const card = clone.querySelector('.card');
+  const card = template.cloneNode(true);
   const image = card.querySelector('.card_image');
   const cartButton = card.querySelector('[data-action="add_to_cart"]');
 
@@ -103,7 +104,7 @@ function createProductCard(product, template) {
  * @param {HTMLElement} grid The <ul> that holds the cards.
  */
 function renderProducts(products, grid) {
-  const template = document.querySelector('#product_card_template');
+  const template = document.querySelector('#product_card_template .card');
 
   displayedProducts = products;
 
@@ -143,8 +144,41 @@ function renderCartCount() {
   cartCountElement.textContent = cartCount;
   
 }
+
+/* --- Actions --- */
+
+/**
+ * Report what would have been added. 
+ * @param {object} product The product being added.
+ */
+function addProductToCart(product) {
+  cartCount++;
+  renderCartCount();
+  alert(`Added to cart\n\nProduct id: ${product.id}\nTitle: ${product.title}`);
+}
+
  
- 
+/* --- Event handling --- */
+
+/**
+ * One delegated listener serves every card in the grid.
+ * @param {MouseEvent} e A click inside the results grid.
+ */
+function handleGridClick(e) {
+
+  if (!e.target || !e.target.dataset || !e.target.dataset.action) {
+    return;
+  }
+
+  const product = findProduct(Number(e.target.dataset.id));
+  const action = e.target.dataset.action;
+
+  if (product && action) {
+    if (action === 'add_to_cart') {
+      addProductToCart(product);
+    }
+  }
+} 
 
 /* --- Main  --- */
 
@@ -154,13 +188,16 @@ function main() {
 
   renderCartCount();
   renderResultsStatus(0, 'Loading products...');
-   
+  
+  grid.addEventListener('click', handleGridClick);
+
   const products = selectProducts(catalogue, CONFIG.productLimit);
  
   renderProducts(products, grid); 
+  renderResultsStatus(products.length);
+  renderCartCount();
  
 }
 
 // Wait for the DOM before touching it
 document.addEventListener('DOMContentLoaded', main);
-
