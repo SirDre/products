@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>AG Assignment 1</title>
+        <meta name="description" content="Assignment 1 single-page product browser built with plain JavaScript.">
 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        
+        <script type="module" src="assets/js/assignment1.js"></script>
+    </head>
+    <body>
+        <header> 
+
+            <a class="logo" href="#browse" data-route="browse">
+                <span class="logo_word">Assignment 1</span>
+            </a>
+
+            <nav class="nav" aria-label="Main">
+                <a class="nav_link is_active" href="#browse" data-route="browse">Browse</a>
+                <button class="nav_link" type="button" data-dialog="about">About</button>
+            </nav>
+ 
+            <p class="cart_indicator" >
+                <span class="cart_indicator_label">Cart</span>
+                <span class="cart_indicator_count" id="cart-count">0</span>
+            </p>
+ 
+        </header>
+        <main>
+            <article class="view" id="browse">
+
+            <section id="results">
+
+                <div class="results_header">
+                <h1 class="results_title">Browse</h1>
+                <p class="results_count" id="results_count"></p>
+                </div>
+
+                <p class="results_message" id="results_message" hidden></p>
+
+                <ul class="product_grid" id="product_grid"></ul>
+
+            </section>
+
+            <div id="product_card_template">
+                <li class="card">
+                    <img class="card_image" src="" alt="" loading="lazy">
+                    <h2 class="card_title"></h2>
+                    <p class="card_price"></p>
+                    <div class="card_actions">
+                        <button type="button" class="card_button card_button_add" data-action="add_to_cart">+</button>
+                    </div>
+                </li>
+            </div>
+            </article>
+        </main>
+        <footer>
+
+            <div class="footer_brand">
+                <span class="logo_word">Andre Gardiner</span>
+                <p class="footer_tagline">Assignment 1 single-page application built without frameworks.</p>
+            </div>
+
+            <nav class="footer_links" aria-label="footer">
+                <h2 class="footer_heading">About Assignment</h2>
+                <a href="https://github.com/SirDre/products/docs">Repository</a>
+                <a href="https://sirdre.github.io/products/README.md">Read me</a>
+                <button class="footer_button" type="button" data-dialog="about">About us</button>
+            </nav> 
+
+            <p class="footer_legal">
+                Built by Andre Gardiner &copy; 2026
+            </p>
+ 
+        </footer>
+    </body>
+    
+</html>
