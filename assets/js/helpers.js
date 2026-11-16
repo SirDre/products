@@ -210,7 +210,15 @@ export function setImage(image, source, alt, placeholderTarget) {
  * Renders a grid of product cards into the specified container element.
  */
 export function renderProductGrid(gridElement, products, onView, onAddToCart) {
-  const template = document.querySelector('#product_card_template .card');
+  const templateElement = document.querySelector('#product_card_template');
+  
+  
+  if (!templateElement) {
+    console.error('Product card template not found');
+    return;
+  }
+  
+  const template = templateElement.content.querySelector('.card');
   
   // Clear existing products
   emptyElement(gridElement);
