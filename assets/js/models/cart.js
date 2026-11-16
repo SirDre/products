@@ -33,6 +33,13 @@ export const DESTINATIONS = {
   international: 'International'
 };
 
+// Flat shipping cost in dollars, looked up by [method][destination]. Object literals.
+const SHIPPING_RATES = {
+  [SHIPPING_METHODS.standard]: { canada: 10, usa: 15, mexico: 15, international: 30 },
+  [SHIPPING_METHODS.express]: { canada: 15, usa: 35, mexico: 35, international: 50 },
+  [SHIPPING_METHODS.priority]: { canada: 35, usa: 50, mexico: 50, international: 70 }
+};
+
 // Sales tax rate, charged on Canadian destinations only.
 export const CANADIAN_TAX_RATE = 0.05;
 
@@ -49,12 +56,12 @@ export class ShoppingCart {
   * Adds a product, increasing the quantity when it is already in the cart. 
   */
   add(productId, quantity) {
-    const amount = this.normalise(quantity === undefined ? 1 : quantity);
+    let amount = this.normalise(quantity === undefined ? 1 : quantity);
 
     let existing;
 
     // Look for an existing line with the same product ID.
-    for (const line of this.lines) {
+    for (let line of this.lines) {
       if (line.id === productId) {
         existing = line;
         break;
@@ -86,8 +93,10 @@ export class ShoppingCart {
    * Saves the cart to local storage.
    */
   save() {
-    localStorage.setItem('shoppingCart', JSON.stringify(this.lines));
-    console.log('Cart saved' + JSON.stringify(this.lines));
+    let data = JSON.stringify(this.lines);
+
+    localStorage.setItem('shoppingCart', data);
+    console.log('Cart saved' + data);
 
   }
 
@@ -125,13 +134,12 @@ export class ShoppingCart {
     this.save();
   }
 
-
   /**
    * Returns the line items for the cart, combining saved lines with current product data.
    * Lines whose product is no longer in the catalogue are ignored.
    */
   lineItems(catalogue) {
-    const items = [];
+    let items = [];
 
     // Iterate over the saved lines and match them with the catalogue products.
     for (let line of this.lines) {
@@ -165,18 +173,13 @@ export class ShoppingCart {
    * 
    */
   shippingRate(method, destination) {
-    const rates = { canada: 10, usa: 15, mexico: 15, international: 30 };
+    let rates = SHIPPING_RATES[method];
 
-    if (rates === undefined) {
+    if (!rates || rates[destination] === undefined) {
       return 0;
     }
 
-    let rate = rates[destination];
-
-    if (rate === undefined) {
-      return 0;
-    }
-    return rate;
+    return rates[destination];
   }
 
   /**

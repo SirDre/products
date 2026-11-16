@@ -154,6 +154,57 @@ export function formatDate(dateString) {
 }
 
 
+/**
+ * Creates a star rating element with optional numeric rating.
+ */
+export function starsElement(rating, number) {
+  let value = parseFloat(rating);
+  let filled = parseInt(value);
+  let wrapper = el('span', 'stars');
+
+  // Accessibility label for screen readers
+  wrapper.setAttribute('aria-label', value.toFixed(1) + ' out of 5 stars');
+
+  // Loop through each star position to build the star elements.
+  for (let star = 1; star <= 5; star++) {
+    const className = star <= filled ? 'star star_on' : 'star';
+    wrapper.appendChild(el('span', className, '★'));
+  }
+
+  if (number) {
+    wrapper.appendChild(el('span', 'stars_number', value.toFixed(1)));
+  }
+
+  return wrapper;
+}
+
+
+/** ---- Images ----  */
+
+
+/**
+ * Sets the source and alt text for an image, and marks a placeholder if loading fails.
+ */
+export function setImage(image, source, alt, placeholderTarget) {
+  let target = placeholderTarget;
+
+  if (!target) {
+    target = image.parentNode;
+  }
+
+  /* Ch 9, Table 9.4 - the src and alt properties of an <img> element. */
+  image.src = source ? source : '';
+  image.alt = alt;
+  image.addEventListener('error', function () {
+    if (target) {
+      target.classList.add('no_image');
+    }
+  });
+
+}
+
+
+
 /** ---- Modal panels ----  */
 
 /**

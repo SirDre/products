@@ -18,50 +18,13 @@
  * Author: Andre Gardiner
  */
 
+import {
+ compareText
+} from './helpers.js';
+
 // The default sort order for the catalogue.
 export const DEFAULT_SORT = 'name';
 
-
-/**
- * Compares two strings for alphabetical order, case-insensitive.
- * 
- */
-export function compareText(a, b) {
-    const first = ('' + a).toLowerCase();
-    const second = ('' + b).toLowerCase();
-    if (first < second) {
-        return -1;
-    }
-    if (first > second) {
-        return 1;
-    }
-    return 0;
-}
-
-/**
- * Sorts a copy of an array of products, so the caller's array is left alone.
- *
- * This is a plain module function rather than a method of Catalogue, because
- * static functions are among the class features (Ch 10, 10.2.2 "Classes").
- */
-export function sortProducts(products, order) {
-  const compare =  order === 'name' ? compareText : compareText; // Default to compareText for now, can extend for other sort orders
-
-  /* Ch 8 "spread syntax ... provides a new way to create an array from one or more existing arrays", used here to copy before sorting. */
-  const sorted = [...products];
-  
-  // Insertion sort is used below to order the products according to the compare function.
-  for (let i = 1; i < sorted.length; i += 1) {
-    const product = sorted[i];
-    let position = i - 1;
-    while (position >= 0 && compare(sorted[position], product) > 0) {
-      sorted[position + 1] = sorted[position];
-      position -= 1;
-    }
-    sorted[position + 1] = product;
-  }
-  return sorted;
-}
 
 // Product class represents a collection of products and provides utility methods for browsing and querying them.
 export class Product {
