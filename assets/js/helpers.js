@@ -153,6 +153,19 @@ export function formatDate(dateString) {
   return MONTH_NAMES[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
 }
 
+/**
+ * Formats a string as a title, replacing hyphens with spaces and capitalizing the first letter.
+ */
+export function formatTitle(value) {
+ 
+  const spaced = value.split('-').join(' '); // Replace hyphens with spaces for display
+  if (spaced.length === 0) {
+    return '';
+  }
+  // Capitalize the first character for display.
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
 
 /**
  * Creates a star rating element with optional numeric rating.

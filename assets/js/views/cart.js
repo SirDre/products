@@ -22,6 +22,7 @@ import {
   cloneTemplate,
   emptyElement,
   formatPrice,
+  formatTitle,
   setImage
 } from '../helpers.js';
 
@@ -161,12 +162,11 @@ export class CartView {
     setImage(row.querySelector('.cart_item_image'), item.product.thumbnail, item.product.title, imageLink);
 
     // Set the category, price, and subtotal for the row.
-    row.querySelector('.cart_item_category').textContent = titleCase(item.product.category);
+    row.querySelector('.cart_item_category').textContent = formatTitle(item.product.category);
     row.querySelector('.cart_col_price').textContent = formatPrice(item.product.price);
     row.querySelector('.cart_col_subtotal').textContent = formatPrice(item.subtotal);
 
     // Both the picture and the title open the product. A click on the <img>
-    // still reaches its parent link, because events bubble (Ch 9, 9.3.4).
     const openProduct = (event) => {
       event.preventDefault();
       this.navigate('product', item.product.id);

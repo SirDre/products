@@ -23,7 +23,8 @@ import {
     cloneTemplate,
     emptyElement,
     renderProductGrid,
-    setImage
+    setImage,
+    formatTitle
 } from '../helpers.js';
 
 // How many products to show in the featured strip.
@@ -116,7 +117,7 @@ export class HomeView {
 
             setImage(tile.querySelector('.department_tile_image'), sample ? sample.thumbnail : '', '', link);
 
-            tile.querySelector('.department_tile_name').textContent = (category);
+            tile.querySelector('.department_tile_name').textContent = formatTitle(category);
 
             tile.querySelector('.department_tile_count').textContent = count === 1 ? '1 product' : `${count} products`;
 

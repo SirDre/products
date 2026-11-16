@@ -28,7 +28,8 @@ import {
     emptyElement,
     renderProductGrid,
     starsElement,
-    sortProducts
+    sortProducts,
+    formatTitle
 } from '../helpers.js';
 
 export class PageView {
@@ -95,7 +96,7 @@ export class PageView {
         for (let index = 0; index < categories.length; index++) {
             const category = categories[index];
             const count = counts[category] === undefined ? 0 : counts[category];
-            const item = this.createCheckbox(category, (category), count);
+            const item = this.createCheckbox(category, formatTitle(category), count);
             this.categoryList.appendChild(item);
         }
         console.log(`Built category filters.`);

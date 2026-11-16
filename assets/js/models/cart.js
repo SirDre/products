@@ -53,6 +53,23 @@ export class ShoppingCart {
   }
 
   /**
+   * Loads the cart from local storage.
+   */
+  load() {
+    let data = localStorage.getItem('shoppingCart');
+    this.lines = data ? JSON.parse(data) : [];
+  }
+
+  /**
+   * Saves the cart to local storage.
+   */
+  save() {
+    let data = JSON.stringify(this.lines);
+    localStorage.setItem('shoppingCart', data);
+    console.log('Cart saved' + data);
+  }
+
+  /**
   * Adds a product, increasing the quantity when it is already in the cart. 
   */
   add(productId, quantity) {
@@ -90,22 +107,22 @@ export class ShoppingCart {
   }
 
   /**
-   * Saves the cart to local storage.
+   * Sets the quantity for a specific product in the cart.
    */
-  save() {
-    let data = JSON.stringify(this.lines);
+  setQuantity(productId, quantity) {
 
-    localStorage.setItem('shoppingCart', data);
-    console.log('Cart saved' + data);
-
-  }
-
-  /**
-   * Loads the cart from local storage.
-   */
-  load() {
-    let data = localStorage.getItem('shoppingCart');
-    this.lines = data ? JSON.parse(data) : [];
+    let line;
+    for (let item of this.lines) {
+      if (item.id === productId) {
+        line = item;
+        break;
+      }
+    }
+    
+    if (line) {
+      line.quantity = this.normalise(quantity);
+      this.save();
+    }
   }
 
   /**
@@ -124,6 +141,13 @@ export class ShoppingCart {
    */
   isEmpty() {
     return this.lines.length === 0;
+  }
+
+  /**
+   * Returns the number of line items (unique products) in the cart.
+   */
+  count() {
+    return this.lines.length;
   }
 
   /**
@@ -157,7 +181,7 @@ export class ShoppingCart {
 
   /**
    * Calculates the total cost of merchandise in the cart.
-   * 
+   * Ignores products that are no longer in the catalogue.
    */
   merchandiseTotal(catalogue) {
     let total = 0;
@@ -184,7 +208,6 @@ export class ShoppingCart {
 
   /**
    * Calculates the totals for the cart, including merchandise, shipping, tax, and overall total.
-   *
   */
   totals(catalogue, method, destination) {
 
