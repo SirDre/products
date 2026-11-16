@@ -1,86 +1,507 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>AG Assignment 1</title>
-        <meta name="description" content="Assignment 1 single-page product browser built with plain JavaScript.">
+        <title>AG  Assignment 2</title>
+        <meta name="description" content="Assignment 2 single-page product store built with plain JavaScript.">
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap">
         <link rel="stylesheet" href="assets/css/style.css">
 
-        
-        <script type="module" src="assets/js/assignment1.js"></script>
+        <!-- type="module" is required for the import/export syntax used by the JavaScript files -->
+        <script src="assets/js/main.js" type="module"></script>
     </head>
-    <body>
-        <header> 
 
-            <a class="logo" href="#browse" data-route="browse">
-                <span class="logo_word">Logo</span>
+    <body>
+
+        <!-- HEADER (requirement 6)-->
+        <header>
+            <a class="logo" href="#" data-view="home">
+                <span class="logo_mark" aria-hidden="true">AG</span>
+                <span class="logo_word">AG Store</span>
             </a>
 
             <nav class="nav" aria-label="Main">
-                <a class="nav_link" href="#home" data-route="home">Home</a> | 
-                <a class="nav_link is_active" href="#browse" data-route="browse">Browse</a> | 
-                <a class="nav_link" href="#about" data-dialog="about">About</a>
+                <a class="nav_link" href="#" data-nav="home" data-view="home">Home</a>
+                <a class="nav_link" href="#" data-nav="browse" data-view="browse">Browse</a>
+                <button class="nav_link" type="button" data-dialog="about">About</button>
             </nav>
- 
-            <p class="cart_indicator" >
+
+            <a class="cart_indicator" href="#" data-nav="cart" data-view="cart">
                 <span class="cart_indicator_label">Cart</span>
-                <span class="cart_indicator_count" id="cart-count">0</span>
-            </p>
- 
+                <span class="cart_indicator_count" id="cart_count">0</span>
+            </a>
         </header>
+
         <main>
-            <article class="view" id="browse">
 
-                <section id="results">
+            <!-- HOME VIEW (requirement 7) -->
+            <article class="view hidden" id="home">
 
-                    <div class="results_header">
-                    <h1 class="results_title">Browse</h1>
-                    <p class="results_count" id="results_count"></p>
+                <section class="hero">
+                    <div class="hero_text">
+                        <p class="hero_eyebrow">Beauty &middot; Fragrance &middot; Home &middot; Grocery</p>
+                        <h1 class="hero_title">Everything you need, in one tidy place.</h1>
+                        <p class="hero_lead">
+                            A hand-built storefront with no front-end framework: every card, filter and
+                            total on this site is rendered by plain JavaScript from a live product API.
+                        </p>
+                        <div class="hero_actions">
+                            <a class="button button_primary" href="#" data-view="browse">Browse the catalogue</a>
+                            <button class="button button_quiet" type="button" data-dialog="about">About this project</button>
+                        </div>
+                        <dl class="hero_stats">
+                            <div class="hero_stat">
+                                <dt>Products</dt>
+                                <dd id="home_stat_products">&mdash;</dd>
+                            </div>
+                            <div class="hero_stat">
+                                <dt>Departments</dt>
+                                <dd id="home_stat_categories">&mdash;</dd>
+                            </div>
+                            <div class="hero_stat">
+                                <dt>Avg. rating</dt>
+                                <dd id="home_stat_rating">&mdash;</dd>
+                            </div>
+                        </dl>
                     </div>
 
-                    <p class="results_message" id="results_message" hidden></p>
-
-                    <ul class="product_grid" id="product_grid"></ul>
-
+                    <div class="hero_media">
+                        <img class="hero_image" id="hero_image" src="" alt="">
+                        <p class="hero_caption" id="hero_caption"></p>
+                    </div>
                 </section>
 
-                <ul id="product_card_template" hidden>
-                    <li class="card">
-                        <img class="card_image" src="" alt="" loading="lazy">
-                        <h2 class="card_title"></h2>
-                        <p class="card_price"></p>
-                        <div class="card_actions">
-                            <button type="button" class="card_button card_button_add_to_cart" data-action="add_to_cart">+</button>
-                        </div>
-                    </li>
-                </ul>
+                <section class="home_section">
+                    <div class="section_header">
+                        <h2 class="section_title">Shop by department</h2>
+                        <a class="section_link" href="#" data-view="browse">See everything</a>
+                    </div>
+                    <ul class="department_tiles" id="department_tiles"></ul>
+                </section>
+
+                <section class="home_section">
+                    <div class="section_header">
+                        <h2 class="section_title">Top rated right now</h2>
+                        <a class="section_link" href="#" data-view="browse">See everything</a>
+                    </div>
+                    <ul class="product_grid product_grid_featured" id="featured_grid"></ul>
+                </section>
 
             </article>
-        </main>
-        <footer>
 
+            <!-- BROWSE VIEW (requirement 9) -->
+            <article class="view hidden" id="browse">
+
+                <!-- Filter sidebar -->
+                <section id="filter">
+                    <div class="filter_header">
+                        <h2 class="filter_title">Departments</h2>
+                        <button class="link_button" type="button" data-action="clear_filters">Clear all</button>
+                    </div>
+
+                    <details class="accordion" open>
+                        <summary class="accordion_summary">Name</summary>
+                        <div class="accordion_body">
+                            <div class="field_row">
+                                <input class="text_input" type="search" id="filter_name"
+                                       placeholder="Search product names" autocomplete="off">
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="accordion" open>
+                        <summary class="accordion_summary">Category</summary>
+                        <div class="accordion_body">
+                            <ul class="checkbox_list" id="filter_categories"></ul>
+                        </div>
+                    </details>
+
+                    <details class="accordion" open>
+                        <summary class="accordion_summary">Rating</summary>
+                        <div class="accordion_body">
+                            <ul class="checkbox_list" id="filter_ratings"></ul>
+                        </div>
+                    </details>
+
+                    <details class="accordion" open>
+                        <summary class="accordion_summary">Price</summary>
+                        <div class="accordion_body">
+                            <div class="field_row">
+                                <label class="field_label" for="filter_price_over">Over</label>
+                                <input class="number_input" type="number" id="filter_price_over"
+                                       min="0" step="1" placeholder="$0" inputmode="decimal">
+                            </div>
+                            <div class="field_row">
+                                <label class="field_label" for="filter_price_under">Under</label>
+                                <input class="number_input" type="number" id="filter_price_under"
+                                       min="0" step="1" placeholder="Any" inputmode="decimal">
+                            </div>
+                        </div>
+                    </details>
+                </section>
+
+                <!-- Results -->
+                <section id="results">
+                    <div class="results_header">
+                        <h1 class="results_title">Browse</h1>
+                        <div class="results_tools">
+                            <label class="field_label" for="sort_order">Sort</label>
+                            <select class="select_input" id="sort_order">
+                                <option value="name" selected>Product name (A - Z)</option>
+                                <option value="price_asc">Price (low to high)</option>
+                                <option value="price_desc">Price (high to low)</option>
+                                <option value="category">Category</option>
+                                <option value="rating">Rating (high to low)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Active filters are mirrored here as removable chips. -->
+                    <div class="active_filters hidden" id="active_filters">
+                        <span class="active_filters_label">Filters</span>
+                        <ul class="chip_list" id="chip_list"></ul>
+                        <button class="link_button" type="button" data-action="clear_filters">Clear all</button>
+                    </div>
+
+                    <p class="results_count" id="results_count"></p>
+                    <p class="results_message hidden" id="results_message"></p>
+
+                    <ul class="product_grid" id="product_grid"></ul>
+                </section>
+
+            </article>
+
+            <!-- SINGLE PRODUCT VIEW (requirement 10) -->
+            <article class="view hidden" id="singleproduct">
+
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                    <ol class="breadcrumb_list" id="breadcrumb_list"></ol>
+                </nav>
+
+                <div class="product_detail">
+
+                    <div class="product_media" id="product_media">
+                        <button class="product_image_button" type="button" id="product_image_button"
+                                aria-label="View full-size image">
+                            <img class="product_image" id="product_image" src="" alt="">
+                        </button>
+                        <ul class="product_thumbs hidden" id="product_thumbs"></ul>
+                    </div>
+
+                    <div class="product_info">
+                        <p class="product_category" id="product_category"></p>
+                        <h1 class="product_title" id="product_title"></h1>
+
+                        <p class="product_price_row">
+                            <span class="product_price" id="product_price"></span>
+                            <span class="product_was hidden" id="product_was"></span>
+                        </p>
+
+                        <p class="product_meta">
+                            <span class="product_sku" id="product_sku"></span>
+                            <span class="product_rating" id="product_rating"></span>
+                        </p>
+
+                        <ul class="pill_list" id="product_tags"></ul>
+
+                        <p class="stock_badge" id="product_stock"></p>
+
+                        <p class="product_description" id="product_description"></p>
+
+                        <form class="add_form" id="add_form">
+                            <label class="field_label" for="product_quantity">Quantity</label>
+                            <input class="number_input" type="number" id="product_quantity" value="1" min="1" step="1" inputmode="numeric">
+                            <button class="button button_primary" type="submit">+ Add to Cart</button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- Specifications / Reviews tabs -->
+                <section class="tabs">
+                    <div class="tab_strip" role="tablist" aria-label="Product details">
+                        <button class="tab" type="button" role="tab" id="tab_specs"
+                                data-tab="specs" aria-controls="panel_specs" aria-selected="true">Specifications</button>
+                        <button class="tab" type="button" role="tab" id="tab_reviews"
+                                data-tab="reviews" aria-controls="panel_reviews" aria-selected="false">Reviews</button>
+                    </div>
+
+                    <div class="tab_panel" id="panel_specs" role="tabpanel" aria-labelledby="tab_specs">
+                        <dl class="spec_list" id="spec_list"></dl>
+                    </div>
+
+                    <div class="tab_panel hidden" id="panel_reviews" role="tabpanel" aria-labelledby="tab_reviews">
+                        <p class="review_summary" id="review_summary"></p>
+                        <ul class="review_list" id="review_list"></ul>
+                    </div>
+                </section>
+                
+            </article>
+
+            <!-- SHOPPING CART VIEW (requirement 11) -->
+            <article class="view hidden" id="cart">
+
+                <div class="results_header">
+                    <h1 class="results_title">Shopping Cart</h1>
+                    <p class="results_count" id="cart_summary_line"></p>
+                </div>
+
+                <div class="cart_layout">
+
+                    <p class="results_message hidden" id="cart_empty_message">
+                        Your cart is empty. Browse the catalogue to add something to it.
+                    </p>
+                    <table class="cart_table" id="cart_table">
+                        <caption class="visually_hidden">Items in your shopping cart</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="cart_col_remove"><span class="visually_hidden">Remove</span></th>
+                                <th scope="col" class="cart_col_item">Items</th>
+                                <th scope="col" class="cart_col_price">Price</th>
+                                <th scope="col" class="cart_col_qty">Quantity</th>
+                                <th scope="col" class="cart_col_subtotal">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cart_rows"></tbody>
+                    </table>
+
+                    <aside class="cart_aside">
+
+                        <section class="panel">
+                            <h2 class="panel_title">Shipping</h2>
+                            <div class="field_stack">
+                                <label class="field_label" for="shipping_method">Method</label>
+                                <select class="select_input" id="shipping_method">
+                                    <option value="standard" selected>Standard</option>
+                                    <option value="express">Express</option>
+                                    <option value="priority">Priority</option>
+                                </select>
+                            </div>
+                            <div class="field_stack">
+                                <label class="field_label" for="shipping_destination">Destination</label>
+                                <select class="select_input" id="shipping_destination">
+                                    <option value="canada" selected>Canada</option>
+                                    <option value="usa">United States</option>
+                                    <option value="mexico">Mexico</option>
+                                    <option value="international">International</option>
+                                </select>
+                            </div>
+                            <p class="panel_note" id="shipping_note"></p>
+                        </section>
+
+                        <section class="panel panel_summary">
+                            <h2 class="panel_title">Summary</h2>
+                            <dl class="summary_list">
+                                <div class="summary_row">
+                                    <dt>Merchandise</dt>
+                                    <dd id="summary_merchandise">$0.00</dd>
+                                </div>
+                                <div class="summary_row">
+                                    <dt>Shipping</dt>
+                                    <dd id="summary_shipping">$0.00</dd>
+                                </div>
+                                <div class="summary_row">
+                                    <dt id="summary_tax_label">Tax</dt>
+                                    <dd id="summary_tax">$0.00</dd>
+                                </div>
+                                <div class="summary_row summary_row_total">
+                                    <dt>Total</dt>
+                                    <dd id="summary_total">$0.00</dd>
+                                </div>
+                            </dl>
+                            <button class="button button_primary button_block" type="button" id="checkout_button">
+                                Checkout
+                            </button>
+                        </section>
+
+                    </aside>
+
+                </div>
+
+            </article>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
             <div class="footer_brand">
-                <span class="logo_word">Andre Gardiner</span>
-                <p class="footer_tagline">Assignment 1 single-page application built without frameworks.</p>
+                <span class="logo_word">AG Store</span>
+                <p class="footer_tagline">
+                    Assignment 2 single-page application built without frameworks.
+                </p>
             </div>
 
-            <nav class="footer_links" aria-label="footer">
-                <h2 class="footer_heading">About</h2>
-                <a href="https://github.com/SirDre/products/LICENSE">License</a>
-                <a href="https://sirdre.github.io/products/README.md">Read me</a>
-                <a class="footer_button" href="#about" data-dialog="about">About</a>
-            </nav> 
+            <nav class="footer_links" aria-label="Project">
+                <h2 class="footer_heading">Project</h2>
+                <a href="https://github.com/SirDre/products/">Repository</a>
+                <a href="https://sirdre.github.io/products/">Live site</a>
+                <button class="footer_button" type="button" data-dialog="about">About us</button>
+            </nav>
+
+            <nav class="footer_links" aria-label="Views">
+                <h2 class="footer_heading">Store</h2>
+                <a href="#" data-view="home">Home</a>
+                <a href="#" data-view="browse">Browse</a>
+                <a href="#" data-view="cart">Shopping cart</a>
+            </nav>
+
+            <nav class="footer_links" aria-label="Data source">
+                <h2 class="footer_heading">Data</h2>
+                <a href="https://dummyjson.com/docs/products">DummyJSON</a>
+            </nav>
 
             <p class="footer_legal">
-                Built by Andre Gardiner &copy; 2026
+                Built by Andre Gardiner &middot; Assignment 2 single-page application &copy; 2026
             </p>
- 
         </footer>
+
+        <!-- MODAL PANELS (requirement 12) -->
+        <div class="modal hidden" id="about" role="dialog" aria-modal="true" aria-labelledby="about_title">
+            <div class="modal_panel about">
+                <button class="about_close_icon" type="button" data-close="about" aria-label="Close about panel">&times;</button>
+
+                <div class="about_body">
+                    <p class="about_eyebrow">About us</p>
+                    <h2 class="about_title" id="about_title">AG Store</h2>
+
+                    <p class="about_lead">
+                        A single-page storefront written for Assignment 2. 
+                    </p>
+
+                    <dl class="about_facts">
+                        <div class="about_fact">
+                            <dt>Built with</dt>
+                            <dd>HTML5, CSS and the JavaScript taught in Chapters 8, 9 and 10.</dd>
+                        </div>
+                        <div class="about_fact">
+                            <dt>Data</dt>
+                            <dd>Fetched once from the DummyJSON products API </dd>
+                        </div>
+                        <div class="about_fact">
+                            <dt>Features</dt>
+                            <dd>shopping cart - add and remove items, view cart contents.
+                                <p>Modal dialogs for about and lightbox panels.</p>
+                                <p>Lightbox for viewing full-size product images.</p>
+                                <p>Star rating display for products.</p>
+                                <p>Responsive design for different screen sizes.</p> 
+                            </dd>
+                        </div>
+                        <div class="about_fact">
+                            <dt>Author</dt>
+                            <dd>Andre Gardiner</dd>
+                        </div>
+                        <div class="about_fact">
+                            <dt>Source</dt>
+                            <dd><a href="https://github.com/SirDre/products/">Github Repository</a></dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="about_footer">
+                    <button class="button button_primary" type="button" data-close="about">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIGHTBOX -->
+        <div class="modal hidden" id="lightbox" role="dialog" aria-modal="true" aria-label="Full size product image">
+            <div class="modal_panel lightbox">
+                <button class="about_close_icon" type="button" data-close="lightbox" aria-label="Close image">&times;</button>
+                <img class="lightbox_image" id="lightbox_image" src="" alt="">
+            </div>
+        </div>
+
+        <!-- PRODUCT CARD TEMPLATE -->
+        <template id="product_card_template">
+            <li class="card">
+                <a class="card_image_link" href="#">
+                    <img class="card_image" src="" alt="">
+                </a>
+                <div class="card_body">
+                    <a class="card_title_link" href="#"><h3 class="card_title"></h3></a>
+                    <p class="card_rating"></p>
+                    <p class="card_price"></p>
+                </div>
+                <div class="card_actions">
+                    <a class="button button_quiet card_view" href="#">View</a>
+                    <button class="button button_icon card_add" type="button" aria-label="Add to cart">+</button>
+                </div>
+            </li>
+        </template>
+        <!-- CHECKBOX FILTER TEMPLATE -->
+        <template id="checkbox_filter_template">
+            <li class="checkbox_item">
+                <label class="checkbox_label">
+                    <input class="checkbox_input" type="checkbox" value="">
+                    <span class="checkbox_text"></span>
+                    <span class="checkbox_count"></span>
+                </label>
+            </li>
+        </template>
+        <!-- CHIP TEMPLATE -->
+        <template id="chip_template">
+            <li class="chip">
+                <span class="chip_text"></span>
+                <button class="chip_remove" type="button" aria-label="Remove filter">&times;</button>
+            </li>
+        </template>
+        <!-- DEPARTMENT TILE TEMPLATE -->
+        <template id="department_tile_template">
+            <li class="department_tile">
+                <a class="department_tile_link" href="#">
+                    <img class="department_tile_image" src="" alt="">
+                    <span class="department_tile_name"></span>
+                    <span class="department_tile_count"></span>
+                </a>
+            </li>
+        </template>
+        <!-- CART ROW TEMPLATE -->
+        <template id="cart_row_template">
+            <tr class="cart_row">
+                <td class="cart_col_remove">
+                    <button class="button button_icon button_danger cart_remove" type="button" aria-label="Remove item">&minus;</button>
+                </td>
+                <td class="cart_col_item">
+                    <div class="cart_item">
+                        <a class="cart_item_link" href="#">
+                            <img class="cart_item_image" src="" alt="">
+                        </a>
+                        <div class="cart_item_text">
+                            <a class="cart_item_title" href="#"></a>
+                            <p class="cart_item_category"></p>
+                        </div>
+                    </div>
+                </td>
+                <td class="cart_col_price" data-label="Price"></td>
+                <td class="cart_col_qty" data-label="Quantity">
+                    <input class="number_input number_input_small cart_quantity" type="number"
+                           min="1" step="1" value="1" aria-label="Quantity">
+                </td>
+                <td class="cart_col_subtotal" data-label="Subtotal"></td>
+            </tr>
+        </template>
+        <!-- REVIEW TEMPLATE -->
+        <template id="review_template">
+            <li class="review">
+                <div class="review_head">
+                    <p class="review_name"></p>
+                    <p class="review_stars"></p>
+                </div>
+                <p class="review_date"></p>
+                <p class="review_comment"></p>
+            </li>
+        </template>
+        <!-- SPEC ROW TEMPLATE -->
+        <template id="spec_row_template">
+            <div class="spec_row">
+                <dt class="spec_term"></dt>
+                <dd class="spec_value"></dd>
+            </div>
+        </template>
+        
     </body>
-    
 </html>
