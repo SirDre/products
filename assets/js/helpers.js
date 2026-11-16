@@ -204,6 +204,68 @@ export function setImage(image, source, alt, placeholderTarget) {
 }
 
 
+/** ---- Product Grid ----  */
+
+/**
+ * Renders a grid of product cards into the specified container element.
+ */
+export function renderProductGrid(gridElement, products, onView, onAddToCart) {
+  const template = document.querySelector('#product_card_template .card');
+  
+  // Clear existing products
+  emptyElement(gridElement);
+  
+  // Render each product card
+  for (let product of products) {
+    let card = template.cloneNode(true);
+    let imageLink = card.querySelector('.card_image_link');
+    let image = card.querySelector('.card_image');
+    let titleLink = card.querySelector('.card_title_link');
+    let title = card.querySelector('.card_title');
+    let rating = card.querySelector('.card_rating');
+    let price = card.querySelector('.card_price');
+    let viewButton = card.querySelector('.card_view');
+    let addButton = card.querySelector('.card_add');
+    
+    // Set product image
+    setImage(image, product.thumbnail, product.title, card);
+    
+    // Set title
+    title.textContent = product.title;
+    titleLink.href = '#';
+    titleLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      onView(product);
+    });
+    
+    imageLink.href = '#';
+    imageLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      onView(product);
+    });
+    
+    // Set rating
+    rating.appendChild(starsElement(product.rating, true));
+    
+    // Set price
+    price.textContent = formatPrice(product.price);
+    
+    // Set view button
+    viewButton.href = '#';
+    viewButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      onView(product);
+    });
+    
+    // Set add to cart button
+    addButton.addEventListener('click', () => {
+      onAddToCart(product);
+    });
+    
+    gridElement.appendChild(card);
+  }
+}
+
 
 /** ---- Modal panels ----  */
 
@@ -219,4 +281,60 @@ export function openModal(id) {
  */
 export function closeModal(id) {
   document.getElementById(id).classList.add('hidden');
+}
+
+/**
+ * Binds modal panel opening and closing to all data-dialog and data-close buttons on the page, as well as backdrop clicks.
+ */
+export function bindModalPanels() {
+  // Open modal when data-dialog button is clicked
+  document.addEventListener('click', (e) => {
+    const dialogId = e.target.dataset.dialog;
+    if (dialogId) {
+      openModal(dialogId);
+    }
+  });
+
+  // Close modal when data-close button is clicked
+  document.addEventListener('click', (e) => {
+    const closeId = e.target.dataset.close;
+    if (closeId) {
+      closeModal(closeId);
+    }
+  });
+
+  // Close modal when clicking on the backdrop (outside the panel)
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+      const modalId = e.target.id;
+      if (modalId) {
+        closeModal(modalId);
+      }
+    }
+  });
+}
+
+/**
+ * Binds the cart badge to the provided shopping cart, updating it whenever the cart changes.
+ */
+export function bindCartBadge(cart) {
+  const badge = document.getElementById('cart_count');
+  
+  if (!badge) {
+    return;
+  }
+
+  // Update the badge with the current cart line count
+  badge.textContent = cart.lines.length; 
+}
+
+/**
+ * Hides all views by adding the 'hidden' class.
+ * Used during initialization to ensure all views start hidden until the router shows the appropriate one.
+ */
+export function hideViews() {
+  const views = document.querySelectorAll('.view');
+  for (let view of views) {
+    view.classList.add('hidden');
+  }
 }

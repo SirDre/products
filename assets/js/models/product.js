@@ -20,11 +20,18 @@
 
 import {
  compareText
-} from './helpers.js';
+} from '../helpers.js';
 
 // The default sort order for the catalogue.
 export const DEFAULT_SORT = 'name';
 
+/**
+ * Converts a decimal rating to the number of whole stars.
+ * For example: 4.7 becomes 4
+ */
+function wholeStars(rating) {
+  return Math.floor(rating);
+}
 
 // Product class represents a collection of products and provides utility methods for browsing and querying them.
 export class Product {
@@ -131,5 +138,62 @@ export class Product {
         return matches;
     }
 
+    /**
+     * Returns the top N products by rating.
+     */
+    topRated(count) {
+        const sorted = [...this.products].sort((a, b) => {
+            return b.rating - a.rating;
+        });
+        return sorted.slice(0, count);
+    }
+
+    /**
+     * Calculates the average rating across all products.
+     */
+    averageRating() {
+        if (this.products.length === 0) {
+            return 0;
+        }
+        const sum = this.products.reduce((total, product) => total + (product.rating || 0), 0);
+        return sum / this.products.length;
+    }
+
+    /**
+     * Returns the count of products in each category.
+     */
+    categoryCounts() {
+        const counts = {};
+        for (let product of this.products) {
+            const category = product.category;
+            counts[category] = (counts[category] || 0) + 1;
+        }
+        return counts;
+    }
+
+    /**
+     * Returns a sample product from a given category.
+     */
+    sampleFor(category) {
+        for (let product of this.products) {
+            if (product.category === category) {
+                return product;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the count of products in each whole star rating (1-5).
+     */
+    ratingCounts() {
+        const counts = {};
+        for (let product of this.products) {
+            const rating = wholeStars(product.rating);
+            counts[rating] = (counts[rating] || 0) + 1;
+        }
+        return counts;
+    }
 
 }
+

@@ -31,9 +31,12 @@
 
 import { ShoppingCart } from './models/cart.js';
 import { Product } from './models/product.js';
+import { Router } from './router.js';
+import { PageView } from './views/page.js';
+import { CartView } from './views/cart.js';
 import { HomeView } from './views/home.js';
+import { ProductView } from './views/product.js';
 import { 
-  Router,
   navigate 
 } from './router.js';
 import {
@@ -45,10 +48,14 @@ import {
 } from './helpers.js';
 
 
+// Global router instance
+let router;
+
+
 // import catalogue from '../data/data-minifed.json' with { type: 'json' };
 
 // All products in one request, as specified by the assignment. https://dummyjson.com/products?limit=100
-const API_URL = 'https://sirdre.github.io/products/assets/data/data-minifed.json';
+const API_URL = './assets/data/data-minifed.json';
 
 // localStorage key holding the cached catalogue.
 const STORAGE_KEY = 'ag_store_catalogue';
@@ -153,6 +160,9 @@ async function main() {
       that fills it. Adding a fifth view would mean one more entry here. */
     router = new Router({
       home: new HomeView(catalogue, cart, navigate, addToCart),
+      browse: new PageView(catalogue, cart, navigate, addToCart),
+      product: new ProductView(catalogue, cart, navigate),
+      cart: new CartView(catalogue, cart, navigate)
     });
 
     bindModalPanels();
@@ -165,7 +175,10 @@ async function main() {
 
   } catch (error) {
     console.error('Could not load the product catalogue.', error);
-    panel.parentNode.removeChild(panel);
+    
+    if (panel && panel.parentNode) {
+      panel.parentNode.removeChild(panel);
+    }
 
   }
 }

@@ -22,13 +22,13 @@
 import { FilterStatus } from '../models/filter.js';
 import {
     DEFAULT_SORT,
-    sortProducts
 } from '../models/product.js';
 import {
     cloneTemplate,
     emptyElement,
     renderProductGrid,
-    starsElement
+    starsElement,
+    sortProducts
 } from '../helpers.js';
 
 export class PageView {
